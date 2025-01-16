@@ -1,67 +1,131 @@
-const { spawn } = require("child_process");
-const { readFileSync } = require("fs-extra");
-const http = require("http");
-const axios = require("axios");
-const semver = require("semver");
-const logger = require("./utils/log");
+<!DOCTYPE html>
+<html lang="en">
+	 <head>
+			<title>AUTOBOT V2</title>
+			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+			<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<link rel="stylesheet" href="styles.css">
+	 </head>
+	 <body>
+			<nav class="navbar navbar-expand-lg navbar-light bg-light">
+				 <a class="navbar-brand" href="#">𝗛𝗼𝗺𝗲 </a>
+				 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+				 <span class="navbar-toggler-icon"></span>
+				 </button>
+				 <div class="collapse navbar-collapse justify-content-end" id="navbarNav" style="margin-right: 70px;">
+						<ul class="navbar-nav">
+							 <li class="nav-item active">
+									<a class="nav-link" href="/">Home <span class="sr-only">(current)</span>
+									</a>
+							 </li>
+							 <li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Features </a>
+									<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+										 <a class="dropdown-item" href="#">Cookies Extractor</a>
+										 <div class="dropdown-divider"></div>
+										 <a class="dropdown-item" href="/step_by_step_guide">Step-by-Step Guide</a>
+									</div>
+							 </li>
+							 <li class="nav-item">
+									<a class="nav-link" href="online_user">Active</a>
+							 </li>
+						</ul>
+				 </div>
+			</nav>
+			<div class="container">
+				 <h1 class="col text-center" style="font-size: 20px; padding: 10px;">𝗘𝗻𝘁𝗲𝗿 𝗬𝗼𝘂𝗿 𝗙𝗯𝘀𝘁𝗮𝘁𝗲 𝗖𝗼𝗼𝗸𝗶𝗲</h1>
+				 <form id="json-form" onsubmit="submitForm(event)">
+						<div class="row">
+							 <div class="col-md-12">
+									<textarea id="json-data" class="form-control centered-textarea center-placeholder" placeholder=""></textarea>
+							 </div>
+						</div>
+				 </form>
+				 <p style=" margin-top: 10px">Greetings! Begin by entering your cookie. Scroll down to carefully review our Terms and Privacy.</p>
+			</div>
+			<div class="container">
+				 <h1 class="col text-center" style="font-size: 20px; padding: 10px;">𝗧𝗲𝗿𝗺𝘀 𝗮𝗻𝗱 𝗖𝗼𝗻𝗱𝗶𝘁𝗶𝗼𝗻𝘀 𝗮𝗻𝗱 𝗣𝗿𝗶𝘃𝗮𝗰𝘆 𝗣𝗼𝗹𝗶𝗰𝘆
+				 </h1>
+				 <p style="color: #FFF; margin-top: 10px">
+				 <p>Upon deployment or logging in, your chatbot connection remains active unless you personally access the bot's account or modify the password. This measure is in place to ensure the seamless operation and security of the chatbot.</p>
+				 <p>Exercise caution and refrain from sharing your cookie with any third party. Your cookie contains sensitive information crucial to the confidentiality and security of your account and the connected chatbot.</p>
+				 <p>As the service provider, we disclaim responsibility for any unauthorized account access. Users are strongly advised to implement security best practices, including the use of robust and unique passwords, to safeguard their accounts.</p>
+				 <p>Accessing the bot's account may lead to a disruption in service. It is strongly recommended not to attempt to access the bot's account to maintain the continuous functionality of the chatbot.</p>
+				 <p>If the chatbot is unresponsive, kindly return to this website. If issues persist, consider changing the account to ensure uninterrupted service.</p>
+				 <p>We, as the service provider, disclaim responsibility for any account locking or suspension on the provided account. Users are expected to adhere to the terms of service of the hosting platform.</p>
+				 <p>For added security, it is highly recommended to use dummy or disposable accounts when interacting with the chatbot.</p>
+				 <p>Users are strictly prohibited from employing the chatbot for malicious activities. Violation of this rule may result in the termination of access to the chatbot and may have legal consequences.</p>
+				 <p>For Further Support, Contact Alex Jhon Ponce On Facebook / Messenger.
+				 <div class="container" id="listOfCommands">
+						<h1 style="font-size: 16px; padding: 10px;">Please choose your commands by tapping on the respective options.</h1>
+						<button class="btn btn-primary" onclick="selectAllCommands()">Select all commands</button>
+				 </div>
+				 <div class="container" id="listOfCommandsEvent">
+						<h1 style="font-size: 16px; padding: 10px;">Please choose your event commands by tapping on the respective options.</h1>
+						<button class="btn btn-primary" onclick="selectAllEvents()">Select all events</button>
+				 </div>
+				 <div class="container" id="prefixOfCommands">
+						<h1 style="font-size: 16px; padding: 10px;">Please provide a prefix (optional)(choose one) .$,  #,  @,  &,  !,  ?,  +,  /,  *,  -,  %,  ✓, •,  ×,  },  {,  ∆, §, ~, |, π, ÷, =, €</h1>
+						<input type="text" id="inputOfPrefix">
+				 </div>
+				 <div class="container" id="adminOfCommands">
+						<h1 style="font-size: 16px; padding: 10px;">Please provide an uid (optional). If you choose not to, entering 'default' will be considered as your input</h1>
+						<input type="text" id="inputOfAdmin">
+				 </div>
+				 <label style="font-size: 14px; display: flex; align-items: center; padding: 22px;">
+				 <input type="checkbox" id="agreeCheckbox" style="color: #FFF; margin-right: 10px;"> Checking this box certifies that I have read, understood, and agreed to the Terms and Conditions Given. </label>
+				 <div class="col text-center">
+						<button class="btn btn-primary" onclick="State()" disabled id="submitButton" style="width: 100%">Submit</button>
+				 </div>
+			</div>
+			<div id="result" class="container text-center" style="display: none;"></div>
+			<div class="footer">
+				 <p>Time: <span id="time"></span>
+				 </p>
+				 <p>Ping: <span id="ping"></span>
+				 </p>
+			</div>
+			<script src="script.js"></script>
+			<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+			<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+	 </body>
+</html>
+<body>
+	</style>
+	<div style="font-size: 25px">
+	<script type="text/javascript">
+	farbbibliothek = new Array();
+	farbbibliothek[0] = new Array("#FF0000","#FF1100","#FF2200","#FF3300","#FF4400","#FF5500","#FF6600","#FF7700","#FF8800","#FF9900","#FFaa00","#FFbb00","#FFcc00","#FFdd00","#FFee00","#FFff00","#FFee00","#FFdd00","#FFcc00","#FFbb00","#FFaa00","#FF9900","#FF8800","#FF7700","#FF6600","#FF5500","#FF4400","#FF3300","#FF2200","#FF1100");
+	farbbibliothek[1] = new Array("#00FF00","#000000","#00FF00","#00FF00");
+	farbbibliothek[2] = new Array("#00FF00","#FF0000","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00");
+	farbbibliothek[3] = new Array("#FF0000","#FF4000","#FF8000","#FFC000","#FFFF00","#C0FF00","#80FF00","#40FF00","#00FF00","#00FF40","#00FF80","#00FFC0","#00FFFF","#00C0FF","#0080FF","#0040FF","#0000FF","#4000FF","#8000FF","#C000FF","#FF00FF","#FF00C0","#FF0080","#FF0040");
+	farbbibliothek[4] = new Array("#FF0000","#EE0000","#DD0000","#CC0000","#BB0000","#AA0000","#990000","#880000","#770000","#660000","#550000","#440000","#330000","#220000","#110000","#000000","#110000","#220000","#330000","#440000","#550000","#660000","#770000","#880000","#990000","#AA0000","#BB0000","#CC0000","#DD0000","#EE0000");
+	farbbibliothek[5] = new Array("#000000","#000000","#000000","#FFFFFF","#FFFFFF","#FFFFFF");
+	farbbibliothek[6] = new Array("#0000FF","#FFFF00");
+	farben = farbbibliothek[4];
+	function farbschrift(){for(var b=0;b<Buchstabe.length;b++){document.all["a"+b].style.color=farben[b]}farbverlauf()}function string2array(b){Buchstabe=new Array();while(farben.length<b.length){farben=farben.concat(farben)}k=0;while(k<=b.length){Buchstabe[k]=b.charAt(k);k++}}function divserzeugen(){for(var b=0;b<Buchstabe.length;b++){document.write("<span id='a"+b+"' class='a"+b+"'>"+Buchstabe[b]+"</span>")}farbschrift()}var a=1;function farbverlauf(){for(var b=0;b<farben.length;b++){farben[b-1]=farben[b]}farben[farben.length-1]=farben[-1];setTimeout("farbschrift()",30)}var farbsatz=1;function farbtauscher(){farben=farbbibliothek[farbsatz];while(farben.length<text.length){farben=farben.concat(farben)}farbsatz=Math.floor(Math.random()*(farbbibliothek.length-0.0001))}setInterval("farbtauscher()",5000);
+
+	text=
+	"Made With Love By: \ Alex Jhon M. Ponce"
+	string2array(text);
+	divserzeugen();
+	//document.write(text);
+	</script></div>
+	<p id='name'>
+	<script></script>
 
 
-/////////////////////////////////////////////
-//========= Check node.js version =========//
-/////////////////////////////////////////////
-
-const nodeVersion = semver.parse(process.version);
-if (nodeVersion.major < 13) {
-    logger(`Your Node.js ${process.version} is not supported, it required Node.js 13 to run bot!`, "error");
-    return process.exit(0);
-};
-
-///////////////////////////////////////////////////////////
-//========= Create website for dashboard/uptime =========//
-///////////////////////////////////////////////////////////
-
-const dashboard = http.createServer(function (_req, res) {
-    res.writeHead(200, "OK", { "Content-Type": "text/plain" });
-    res.write("HI! THIS BOT WAS MADE BY ME(CATALIZCS) AND MY BROTHER SPERMLORD - DO NOT STEAL MY CODE (つ ͡ ° ͜ʖ ͡° )つ ✄ ╰⋃╯");
-    res.end();
-});
-
-dashboard.listen(process.env.port || 0);
-
-logger("Opened server site...", "[ Starting ]");
-
-/////////////////////////////////////////////////////////
-//========= Create start bot and make it loop =========//
-/////////////////////////////////////////////////////////
-
-function startBot(message) {
-    (message) ? logger(message, "[ Starting ]") : "";
-
-    const child = spawn("node", ["--trace-warnings", "--async-stack-traces", "mirai.js"], {
-        cwd: __dirname,
-        stdio: "inherit",
-        shell: true
-    });
-
-    child.on("close", (codeExit) => {
-        if (codeExit != 0 || global.countRestart && global.countRestart < 5) {
-            startBot("Restarting...");
-            global.countRestart += 1;
-            return;
-        } else return;
-    });
-
-    child.on("error", function (error) {
-        logger("An error occurred: " + JSON.stringify(error), "[ Starting ]");
-    });
-};
-
-////////////////////////////////////////////////
-//========= Check update from Github =========//
-////////////////////////////////////////////////
-
-axios.get('https://raw.githubusercontent.com/miraipr0ject/miraiv2/master/package.json').then((res) => {
-    const _0x3a9e=['\x31\x41\x58\x77\x72\x75\x6c','\x44\x41\x54\x45\x20\x5d','\x75\x70\x64\x61\x74\x65\x22\x20\x74\x6f','\x6c\x61\x62\x6c\x65\x2c\x20\x73\x74\x61','\x20\x75\x70\x64\x61\x74\x65\x21','\x2f\x63\x6d\x64\x20\x61\x6e\x64\x20\x74','\x79\x70\x65\x20\x22\x6e\x6f\x64\x65\x20','\x72\x74\x20\x75\x70\x64\x61\x74\x65\x20','\x38\x36\x32\x31\x35\x39\x71\x6f\x42\x57\x43\x42','\x59\x6f\x75\x20\x61\x72\x65\x20\x75\x73','\x6c\x61\x62\x6c\x65\x21\x20\x4f\x70\x65','\x6e\x20\x74\x65\x72\x6d\x69\x6e\x61\x6c','\x75\x70\x64\x61\x74\x65\x2e\x6a\x73','\x41\x20\x6e\x65\x77\x20\x75\x70\x64\x61','\x69\x6e\x67\x20\x74\x68\x65\x20\x6c\x61','\x61\x75\x74\x6f\x55\x70\x64\x61\x74\x65','\x39\x35\x38\x37\x37\x38\x4c\x48\x75\x42\x6d\x58','\x6f\x6e\x21','\x38\x33\x36\x32\x30\x67\x41\x44\x73\x47\x6f','\x2e\x2f\x70\x61\x63\x6b\x61\x67\x65\x2e','\x73\x74\x64\x69\x6f','\x5b\x20\x43\x48\x45\x43\x4b\x20\x55\x50','\x70\x72\x6f\x63\x65\x73\x73\x69\x6e\x67','\x31\x39\x31\x6a\x46\x67\x63\x4e\x64','\x74\x65\x20\x69\x73\x20\x61\x76\x61\x69','\x63\x77\x64','\x31\x38\x35\x33\x37\x6f\x45\x57\x54\x76\x44','\x31\x32\x32\x34\x37\x48\x58\x78\x69\x70\x65','\x55\x6e\x61\x62\x6c\x65\x20\x74\x6f\x20','\x70\x61\x72\x73\x65','\x76\x65\x72\x73\x69\x6f\x6e','\x31\x35\x34\x33\x31\x30\x32\x69\x75\x59\x59\x75\x54','\x69\x6e\x68\x65\x72\x69\x74','\x6e\x6f\x64\x65','\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69','\x65\x78\x69\x74','\x32\x37\x34\x32\x34\x31\x63\x57\x52\x4b\x73\x44'];const _0x4d57a7=_0x3e46;(function(_0x1138e2,_0x16800a){const _0x3181c3=_0x3e46;while(!![]){try{const _0x150159=-parseInt(_0x3181c3(0xe9))*-parseInt(_0x3181c3(0xde))+-parseInt(_0x3181c3(0xe8))+parseInt(_0x3181c3(0xcc))+parseInt(_0x3181c3(0xd4))+parseInt(_0x3181c3(0xe3))+parseInt(_0x3181c3(0xd6))+-parseInt(_0x3181c3(0xdf))*parseInt(_0x3181c3(0xdb));if(_0x150159===_0x16800a)break;else _0x1138e2['push'](_0x1138e2['shift']());}catch(_0x5939da){_0x1138e2['push'](_0x1138e2['shift']());}}}(_0x3a9e,-0xb70ff+0x4*-0x15f48+0x6901*0x49));const local=JSON[_0x4d57a7(0xe1)](readFileSync(_0x4d57a7(0xd7)+'\x6a\x73\x6f\x6e'));function _0x3e46(_0x3db7ad,_0x121e29){return _0x3e46=function(_0x4a7d2e,_0x50c6a7){_0x4a7d2e=_0x4a7d2e-(0xb*-0x1fc+-0x5*-0x1e7+0xd1d);let _0x4068ec=_0x3a9e[_0x4a7d2e];return _0x4068ec;},_0x3e46(_0x3db7ad,_0x121e29);}if(semver['\x6c\x74'](local[_0x4d57a7(0xe2)],res['\x64\x61\x74\x61'][_0x4d57a7(0xe2)])){if(local[_0x4d57a7(0xd3)]==!![]){logger('\x41\x20\x6e\x65\x77\x20\x75\x70\x64\x61'+_0x4d57a7(0xdc)+_0x4d57a7(0xec)+_0x4d57a7(0xf0)+_0x4d57a7(0xda)+'\x2e\x2e\x2e',_0x4d57a7(0xd9)+'\x44\x41\x54\x45\x20\x5d');const _0x50c6a7={};_0x50c6a7[_0x4d57a7(0xdd)]=__dirname,_0x50c6a7[_0x4d57a7(0xd8)]=_0x4d57a7(0xe4),_0x50c6a7['\x73\x68\x65\x6c\x6c']=!![];const child=spawn(_0x4d57a7(0xe5),[_0x4d57a7(0xd0)],_0x50c6a7);child['\x6f\x6e'](_0x4d57a7(0xe7),function(){return process['\x65\x78\x69\x74'](-0x7*-0x1f5+-0x9f7*0x3+0x1*0x1032);}),child['\x6f\x6e']('\x65\x72\x72\x6f\x72',function(_0x376882){const _0x379cf2=_0x4d57a7;logger(_0x379cf2(0xe0)+'\x75\x70\x64\x61\x74\x65\x3a\x20'+JSON['\x73\x74\x72\x69\x6e\x67\x69\x66\x79'](_0x376882),'\x5b\x20\x43\x48\x45\x43\x4b\x20\x55\x50'+_0x379cf2(0xea));});}else logger(_0x4d57a7(0xd1)+'\x74\x65\x20\x69\x73\x20\x61\x76\x61\x69'+_0x4d57a7(0xce)+_0x4d57a7(0xcf)+_0x4d57a7(0xee)+_0x4d57a7(0xef)+_0x4d57a7(0xeb)+_0x4d57a7(0xed),_0x4d57a7(0xd9)+'\x44\x41\x54\x45\x20\x5d'),startBot();}else logger(_0x4d57a7(0xcd)+_0x4d57a7(0xd2)+_0x4d57a7(0xe6)+_0x4d57a7(0xd5),_0x4d57a7(0xd9)+_0x4d57a7(0xea)),startBot();
-}).catch(err => logger("Unable to check update.", "[ CHECK UPDATE ]"));
-
-//THIZ BOT WAS MADE BY ME(CATALIZCS) AND MY BROTHER SPERMLORD - DO NOT STEAL MY CODE (つ ͡ ° ͜ʖ ͡° )つ ✄ ╰⋃╯
+<video src="https://docimg.replit.com/images/tutorials/markdown/erm.mp4" controls></video>
+<body>
+		<div class="wrapper">
+				<div class="display">
+						<div id="time"></div>
+				</div>
+				<span></span>
+				<span></span>
+		</div>
+		<script src="./index.js"></script>
